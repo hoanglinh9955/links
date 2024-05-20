@@ -1,4 +1,4 @@
-const appSecret = '5b8b74b250e6fbd28568ba8aa038335c294e5ebb726fbba696eedd933d377bed'
+const { appSecret } = useRuntimeConfig();
 
 export default class CallsApp {
   constructor(appId, basePath = 'https://rtc.live.cloudflare.com/v1') {
