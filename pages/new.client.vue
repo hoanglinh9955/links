@@ -19,9 +19,10 @@
 </template>
 
 <script setup>
-import CallsApp from '../app/instance'
+// import CallsApp from '../app/instance'
 
-const appId = '5a8c054d95c29fea28f3b06f3b1efc6f'
+const appId = 'ad836a8241aec874626b3054f2200d6b'
+const appSecret = 'beb113cacedfd22ef6a4959810b17baea15e96bc95c02bbd50f0911982dbcdbf'
 
 const localvideo = ref()
 const remotevideo = ref()
@@ -36,86 +37,86 @@ watchEffect(() => {
     localvideo.value.srcObject = localStream
 })
 
-// class CallsApp {
-//   constructor(appId, basePath = 'https://rtc.live.cloudflare.com/v1') {
-//     this.prefixPath = `${basePath}/apps/${appId}`
-//   }
+class CallsApp {
+  constructor(appId, basePath = 'https://rtc.live.cloudflare.com/v1') {
+    this.prefixPath = `${basePath}/apps/${appId}`
+  }
 
-//   async sendRequest(url, body, method = 'POST') {
-//     const request = {
-//       method: method,
-//       mode: 'cors',
-//       headers: {
-//         'content-type': 'application/json',
-//         'Authorization': `Bearer ${appSecret}`,
-//       },
-//       body: JSON.stringify(body),
-//     }
-//     const response = await fetch(url, request)
-//     const result = await response.json()
-//     return result
-//   }
+  async sendRequest(url, body, method = 'POST') {
+    const request = {
+      method: method,
+      mode: 'cors',
+      headers: {
+        'content-type': 'application/json',
+        'Authorization': `Bearer ${appSecret}`,
+      },
+      body: JSON.stringify(body),
+    }
+    const response = await fetch(url, request)
+    const result = await response.json()
+    return result
+  }
 
-//   checkErrors(result, tracksCount = 0) {
-//     if (result.errorCode) {
-//       throw new Error(result.errorDescription)
-//     }
-//     for (let i = 0; i < tracksCount; i++) {
-//       if (result.tracks[i].errorCode) {
-//         throw new Error(
-//                   `tracks[${i}]: ${result.tracks[i].errorDescription}`,
-//         )
-//       }
-//     }
-//   }
+  checkErrors(result, tracksCount = 0) {
+    if (result.errorCode) {
+      throw new Error(result.errorDescription)
+    }
+    for (let i = 0; i < tracksCount; i++) {
+      if (result.tracks[i].errorCode) {
+        throw new Error(
+                  `tracks[${i}]: ${result.tracks[i].errorDescription}`,
+        )
+      }
+    }
+  }
 
-//   // newSession sends the initial offer and creates a session
-//   async newSession(offerSDP) {
-//     const url = `${this.prefixPath}/sessions/new`
-//     const body = {
-//       sessionDescription: {
-//         type: 'offer',
-//         sdp: offerSDP,
-//       },
-//     }
-//     const result = await this.sendRequest(url, body)
-//     this.checkErrors(result)
-//     this.sessionId = result.sessionId
-//     return result
-//   }
+  // newSession sends the initial offer and creates a session
+  async newSession(offerSDP) {
+    const url = `${this.prefixPath}/sessions/new`
+    const body = {
+      sessionDescription: {
+        type: 'offer',
+        sdp: offerSDP,
+      },
+    }
+    const result = await this.sendRequest(url, body)
+    this.checkErrors(result)
+    this.sessionId = result.sessionId
+    return result
+  }
 
-//   // newTracks shares local tracks or gets tracks
-//   async newTracks(trackObjects, offerSDP = null) {
-//     const url = `${this.prefixPath}/sessions/${this.sessionId}/tracks/new`
-//     const body = {
+  // newTracks shares local tracks or gets tracks
+  async newTracks(trackObjects, offerSDP = null) {
+    const url = `${this.prefixPath}/sessions/${this.sessionId}/tracks/new`
+    const body = {
 
-//       sessionDescription: {
-//         type: 'offer',
-//         sdp: offerSDP,
-//       },
-//       tracks: trackObjects,
-//     }
-//     if (!offerSDP) {
-//       delete body.sessionDescription
-//     }
-//     const result = await this.sendRequest(url, body)
-//     this.checkErrors(result, trackObjects.length)
-//     return result
-//   }
+      sessionDescription: {
+        type: 'offer',
+        sdp: offerSDP,
+      },
+      tracks: trackObjects,
+    }
+    if (!offerSDP) {
+      delete body.sessionDescription
+    }
+    const result = await this.sendRequest(url, body)
+    this.checkErrors(result, trackObjects.length)
+    return result
+  }
 
-//   // sendAnswerSDP sends an answer SDP if a renegotiation is required
-//   async sendAnswerSDP(answer) {
-//     const url = `${this.prefixPath}/sessions/${this.sessionId}/renegotiate`
-//     const body = {
-//       sessionDescription: {
-//         type: 'answer',
-//         sdp: answer,
-//       },
-//     }
-//     const result = await this.sendRequest(url, body, 'PUT')
-//     this.checkErrors(result)
-//   }
-// }
+  // sendAnswerSDP sends an answer SDP if a renegotiation is required
+  async sendAnswerSDP(answer) {
+    const url = `${this.prefixPath}/sessions/${this.sessionId}/renegotiate`
+    const body = {
+      sessionDescription: {
+        type: 'answer',
+        sdp: answer,
+      },
+    }
+    const result = await this.sendRequest(url, body, 'PUT')
+    this.checkErrors(result)
+  }
+}
 
 const app = new CallsApp(appId)
 console.log('🚀 ~ app:', app)

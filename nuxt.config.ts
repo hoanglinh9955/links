@@ -20,8 +20,10 @@ export default defineNuxtConfig({
       ],
     },
   },
-  runtimeConfig: {
-    appSecret: process.env.APP_SERCRET,
-  },
+  // runtimeConfig: {
+  //   public: {
+  //     appSecret: process.env.APP_SERCRET
+  //   }
+  // },
   modules: ['nitro-cloudflare-dev', '@nuxt/ui', '@nuxt/eslint'],
 })
