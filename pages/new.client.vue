@@ -1,28 +1,20 @@
 <template>
   <div>
     <div>local video</div>
-    <video
-      ref="localvideo"
-      autoplay
-      muted
-    />
+    <video ref="localvideo" autoplay muted />
   </div>
 
   <div>
     <div>remote video</div>
-    <video
-      ref="remotevideo"
-      autoplay
-      muted
-    />
+    <video ref="remotevideo" autoplay muted />
   </div>
 </template>
 
 <script setup>
-// import CallsApp from '../app/instance'
+import CallsApp from '../app/instance'
 
-const appId = 'ad836a8241aec874626b3054f2200d6b'
-const appSecret = 'beb113cacedfd22ef6a4959810b17baea15e96bc95c02bbd50f0911982dbcdbf'
+const appId = 'c7678f7f65dd2fec76444e58d6076e0b'
+
 
 const localvideo = ref()
 const remotevideo = ref()
@@ -37,86 +29,86 @@ watchEffect(() => {
     localvideo.value.srcObject = localStream
 })
 
-class CallsApp {
-  constructor(appId, basePath = 'https://rtc.live.cloudflare.com/v1') {
-    this.prefixPath = `${basePath}/apps/${appId}`
-  }
+// class CallsApp {
+//   constructor(appId, basePath = 'https://rtc.live.cloudflare.com/v1') {
+//     this.prefixPath = `${basePath}/apps/${appId}`
+//   }
 
-  async sendRequest(url, body, method = 'POST') {
-    const request = {
-      method: method,
-      mode: 'cors',
-      headers: {
-        'content-type': 'application/json',
-        'Authorization': `Bearer ${appSecret}`,
-      },
-      body: JSON.stringify(body),
-    }
-    const response = await fetch(url, request)
-    const result = await response.json()
-    return result
-  }
+//   async sendRequest(url, body, method = 'POST') {
+//     const request = {
+//       method: method,
+//       mode: 'cors',
+//       headers: {
+//         'content-type': 'application/json',
+//         'Authorization': `Bearer ${appSecret}`,
+//       },
+//       body: JSON.stringify(body),
+//     }
+//     const response = await fetch(url, request)
+//     const result = await response.json()
+//     return result
+//   }
 
-  checkErrors(result, tracksCount = 0) {
-    if (result.errorCode) {
-      throw new Error(result.errorDescription)
-    }
-    for (let i = 0; i < tracksCount; i++) {
-      if (result.tracks[i].errorCode) {
-        throw new Error(
-                  `tracks[${i}]: ${result.tracks[i].errorDescription}`,
-        )
-      }
-    }
-  }
+//   checkErrors(result, tracksCount = 0) {
+//     if (result.errorCode) {
+//       throw new Error(result.errorDescription)
+//     }
+//     for (let i = 0; i < tracksCount; i++) {
+//       if (result.tracks[i].errorCode) {
+//         throw new Error(
+//           `tracks[${i}]: ${result.tracks[i].errorDescription}`,
+//         )
+//       }
+//     }
+//   }
 
-  // newSession sends the initial offer and creates a session
-  async newSession(offerSDP) {
-    const url = `${this.prefixPath}/sessions/new`
-    const body = {
-      sessionDescription: {
-        type: 'offer',
-        sdp: offerSDP,
-      },
-    }
-    const result = await this.sendRequest(url, body)
-    this.checkErrors(result)
-    this.sessionId = result.sessionId
-    return result
-  }
+//   // newSession sends the initial offer and creates a session
+//   async newSession(offerSDP) {
+//     const url = `${this.prefixPath}/sessions/new`
+//     const body = {
+//       sessionDescription: {
+//         type: 'offer',
+//         sdp: offerSDP,
+//       },
+//     }
+//     const result = await this.sendRequest(url, body)
+//     this.checkErrors(result)
+//     this.sessionId = result.sessionId
+//     return result
+//   }
 
-  // newTracks shares local tracks or gets tracks
-  async newTracks(trackObjects, offerSDP = null) {
-    const url = `${this.prefixPath}/sessions/${this.sessionId}/tracks/new`
-    const body = {
+//   // newTracks shares local tracks or gets tracks
+//   async newTracks(trackObjects, offerSDP = null) {
+//     const url = `${this.prefixPath}/sessions/${this.sessionId}/tracks/new`
+//     const body = {
 
-      sessionDescription: {
-        type: 'offer',
-        sdp: offerSDP,
-      },
-      tracks: trackObjects,
-    }
-    if (!offerSDP) {
-      delete body.sessionDescription
-    }
-    const result = await this.sendRequest(url, body)
-    this.checkErrors(result, trackObjects.length)
-    return result
-  }
+//       sessionDescription: {
+//         type: 'offer',
+//         sdp: offerSDP,
+//       },
+//       tracks: trackObjects,
+//     }
+//     if (!offerSDP) {
+//       delete body.sessionDescription
+//     }
+//     const result = await this.sendRequest(url, body)
+//     this.checkErrors(result, trackObjects.length)
+//     return result
+//   }
 
-  // sendAnswerSDP sends an answer SDP if a renegotiation is required
-  async sendAnswerSDP(answer) {
-    const url = `${this.prefixPath}/sessions/${this.sessionId}/renegotiate`
-    const body = {
-      sessionDescription: {
-        type: 'answer',
-        sdp: answer,
-      },
-    }
-    const result = await this.sendRequest(url, body, 'PUT')
-    this.checkErrors(result)
-  }
-}
+//   // sendAnswerSDP sends an answer SDP if a renegotiation is required
+//   async sendAnswerSDP(answer) {
+//     const url = `${this.prefixPath}/sessions/${this.sessionId}/renegotiate`
+//     const body = {
+//       sessionDescription: {
+//         type: 'answer',
+//         sdp: answer,
+//       },
+//     }
+//     const result = await this.sendRequest(url, body, 'PUT')
+//     this.checkErrors(result)
+//   }
+// }
 
 const app = new CallsApp(appId)
 console.log('🚀 ~ app:', app)
@@ -130,7 +122,6 @@ const pc = new RTCPeerConnection({
   ],
   bundlePolicy: 'max-bundle',
 })
-console.log(pc)
 
 // Add sendonly trancievers to the PeerConnection
 const transceivers = localStream.getTracks().map(track =>
@@ -144,6 +135,7 @@ await pc.setLocalDescription(await pc.createOffer())
 const newSessionResult = await app.newSession(
   pc.localDescription.sdp,
 )
+
 await pc.setRemoteDescription(
   new RTCSessionDescription(newSessionResult.sessionDescription),
 )
@@ -222,6 +214,7 @@ const remoteTracksPromise = new Promise((resolve) => {
 // }
 
 const newRemoteTracksResult = await app.newTracks(trackObjects)
+// console.log('🚀 ~ newRemoteTracksResult:', newRemoteTracksResult)
 
 // Check if newRemoteTracksResult is null
 if (newRemoteTracksResult) {
@@ -230,9 +223,16 @@ if (newRemoteTracksResult) {
     switch (newRemoteTracksResult.sessionDescription.type) {
       case 'offer':
         // We let Cloudflare know we're ready to receive the tracks
-        await pc.setRemoteDescription(
-          new RTCSessionDescription(newRemoteTracksResult.sessionDescription),
-        )
+
+        try {
+          await pc.setRemoteDescription(
+            new RTCSessionDescription(newRemoteTracksResult.sessionDescription)
+          );
+          console.log('Remote session description set successfully');
+        } catch (error) {
+          console.error('Error setting remote session description:', error);
+          // Handle the error (e.g., retry the operation, display an error message)
+        }
 
         await pc.setLocalDescription(await pc.createAnswer())
         await app.sendAnswerSDP(pc.localDescription.sdp)
@@ -251,16 +251,18 @@ else {
   // Handle the null response (e.g., display an error message)
   // You can add logic to retry the request or inform the user about the issue.
 }
-console.log('🚀 ~ app:', app)
+
 const remoteTracks = await remoteTracksPromise
+console.log("🚀 ~ remoteTracks:", remoteTracks)
+console.log("🚀 ~ remoteTracksPromise:", remoteTracksPromise)
 const remoteStream = new MediaStream()
 remoteStream.addTrack(remoteTracks[0])
 remoteStream.addTrack(remoteTracks[1])
 
+
+// console.log(runtimeConfig.public.appSecret)
 watchEffect(() => {
   if (remotevideo.value)
     remotevideo.value.srcObject = remoteStream
 })
 </script>
-
-<style></style>

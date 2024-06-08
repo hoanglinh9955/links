@@ -2,7 +2,7 @@ export default defineEventHandler(async (event) => {
   try {
     // const query = getQuery(event)
     const results = event.context.cloudflare.env.DB.prepare(
-      'SELECT * FROM `categories`',
+      'SELECT * FROM `products`',
     ).all()
     // run return success: true or false and meta
     return results

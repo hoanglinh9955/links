@@ -1,6 +1,5 @@
-// const config = useRuntimeConfig();
-const appSecret = 'beb113cacedfd22ef6a4959810b17baea15e96bc95c02bbd50f0911982dbcdbf'
-// console.log(process.env.APP);
+const appSecret = '347b2f506857899bcfe6720689a44ba78f1afd352c318861dfe00bc222517203'
+
 export default class CallsApp {
   constructor(appId, basePath = 'https://rtc.live.cloudflare.com/v1') {
     this.prefixPath = `${basePath}/apps/${appId}`
